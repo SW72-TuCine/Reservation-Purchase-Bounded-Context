@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/TuCine/v1")
+@RequestMapping("/api/TuCine/v1/reservation_purchase")
 public class PromotionController {
     @Autowired
     private PromotionService promotionService;
