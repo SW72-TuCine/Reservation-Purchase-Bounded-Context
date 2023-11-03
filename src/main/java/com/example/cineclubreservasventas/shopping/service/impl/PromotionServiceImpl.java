@@ -52,4 +52,9 @@ public class PromotionServiceImpl implements PromotionService {
                 .orElseThrow(() -> new IllegalArgumentException("Can't find a ticket with that Id"));
         return promotionDB;
     }
+
+    @Override
+    public boolean checkIfUserExist(Long userId){
+        return false;
+    }
 }
