@@ -7,5 +7,4 @@ public interface PromotionService {
     public Promotion modifyPromotion(Long id, Promotion promotion);
     public void deletePromotion(Long id);
     public Promotion getPromotion(Long id);
-    public boolean checkIfUserExist(Long userId);
 }

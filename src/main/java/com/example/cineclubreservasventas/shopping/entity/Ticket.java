@@ -19,22 +19,16 @@ public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
-    @Column(name = "dateEmition")
+    @Column(name = "dateEmition", nullable = false)
     private Date dateEmition;
-
-    @Column(name = "dateModify")
+    @Column(name = "dateModify", nullable = false)
     private int dateModify;
-
-    @Column(name = "numberSeats")
+    @Column(name = "numberSeats", nullable = false)
     private int numberSeats;
-
-    @Column(name = "userId")
+    @Column(name = "userId", nullable = false)
     private long userId;
-
-    @Column(name = "totalPrice")
+    @Column(name = "totalPrice", nullable = false)
     private float totalPrice;
-
     private long movieFutureId;
     private int status;
 }

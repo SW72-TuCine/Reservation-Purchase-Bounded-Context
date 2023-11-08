@@ -53,8 +53,4 @@ public class PromotionServiceImpl implements PromotionService {
         return promotionDB;
     }
 
-    @Override
-    public boolean checkIfUserExist(Long userId){
-        return false;
-    }
 }
