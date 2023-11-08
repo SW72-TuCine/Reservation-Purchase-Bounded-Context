@@ -1,11 +1,14 @@
 package com.example.cineclubreservasventas.shopping.service.impl;
 
+import com.example.cineclubreservasventas.shopping.client.UserClient;
 import com.example.cineclubreservasventas.shopping.dto.common.TicketDto;
 import com.example.cineclubreservasventas.shopping.dto.recieved.TicketRecievedDto;
 import com.example.cineclubreservasventas.shopping.entity.Promotion;
 import com.example.cineclubreservasventas.shopping.entity.Ticket;
 import com.example.cineclubreservasventas.shopping.repository.TicketRepository;
 import com.example.cineclubreservasventas.shopping.service.inter.TicketService;
+import feign.FeignException;
+import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +19,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class TicketServiceImpl implements TicketService {
+    @Autowired
+    UserClient userClient;
     @Autowired
     TicketRepository ticketRepository;
     @Autowired
@@ -29,9 +34,11 @@ public class TicketServiceImpl implements TicketService {
     public Ticket DtoToEntity(TicketDto ticket){
         return modelMapper.map(ticket, Ticket.class);
     }
+    @SneakyThrows
     @Override
     public TicketDto createTicket(TicketRecievedDto ticket) {
         validateTicket(ticket);
+        ValidateIfUserExists(String.valueOf(ticket.getUserId()));
         TicketDto ticketDto=modelMapper.map(ticket,TicketDto.class);
         Ticket ticket1 = DtoToEntity(ticketDto);
 
@@ -97,6 +104,18 @@ public class TicketServiceImpl implements TicketService {
         Ticket ticketDB = ticketRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Can't find a ticket with that Id"));
         return ticketDB;
+    }
+
+    private void ValidateIfUserExists(String id) throws Exception {
+        try{
+            boolean UserResponse = userClient.checkIfUserExist(Long.valueOf(id));
+            if(!UserResponse){
+                throw new IllegalArgumentException("Showtime does not exists");
+            }
+
+        } catch (FeignException feignException) {
+            throw new IllegalArgumentException(feignException.getMessage());
+        }
     }
 
 
