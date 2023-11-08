@@ -1,11 +1,15 @@
 package com.example.cineclubreservasventas.shopping.service.impl;
 
+import com.example.cineclubreservasventas.shopping.client.ShowtimeClient;
 import com.example.cineclubreservasventas.shopping.dto.common.PromotionDto;
 import com.example.cineclubreservasventas.shopping.dto.recieved.PromotionRecievedDto;
 import com.example.cineclubreservasventas.shopping.entity.Promotion;
 import com.example.cineclubreservasventas.shopping.repository.PromotionRepository;
 import com.example.cineclubreservasventas.shopping.service.inter.PromotionService;
+import feign.FeignException;
+import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +18,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class PromotionServiceImpl implements PromotionService {
+    @Autowired
+    private ShowtimeClient showtimeClient;
     @Autowired
     PromotionRepository promotionRepository;
     @Autowired
@@ -27,9 +33,11 @@ public class PromotionServiceImpl implements PromotionService {
     public Promotion DtoToEntity(PromotionDto promotion){
         return modelMapper.map(promotion, Promotion.class);
     }
+    @SneakyThrows
     @Override
     public PromotionDto createPromotion(PromotionRecievedDto promotion) {
         validatePromotion(promotion);
+        ValidateIfShowtimeExists(String.valueOf(promotion.getCineclubId()));
         PromotionDto promotionDto = modelMapper.map(promotion, PromotionDto.class);
         Promotion prom = DtoToEntity(promotionDto);
 
@@ -75,6 +83,18 @@ public class PromotionServiceImpl implements PromotionService {
         }
         if(promotion.getInitDate() == null){
             throw new IllegalArgumentException("InitDate is obligatory");
+        }
+    }
+
+    private void ValidateIfShowtimeExists(String id) throws Exception {
+        try{
+            boolean ShowtimeResponse = showtimeClient.checkIfShowtimeExist(Long.valueOf(id));
+            if(!ShowtimeResponse){
+                throw new IllegalArgumentException("Showtime does not exists");
+            }
+
+        } catch (FeignException feignException) {
+            throw new IllegalArgumentException(feignException.getMessage());
         }
     }
 
