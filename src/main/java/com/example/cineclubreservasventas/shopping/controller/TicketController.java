@@ -1,10 +1,14 @@
 package com.example.cineclubreservasventas.shopping.controller;
 
+import com.example.cineclubreservasventas.shopping.dto.common.TicketDto;
+import com.example.cineclubreservasventas.shopping.dto.recieved.TicketRecievedDto;
 import com.example.cineclubreservasventas.shopping.entity.Ticket;
 import com.example.cineclubreservasventas.shopping.service.inter.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/TuCine/v1/reservation_purchase")
@@ -12,18 +16,18 @@ public class TicketController {
     @Autowired
     private TicketService ticketService;
 
-    @GetMapping("/tickets/{ticketId}")
-    public ResponseEntity<Ticket> getTicket(Long ticketId){
-        return new ResponseEntity<>(ticketService.getTicket(ticketId), org.springframework.http.HttpStatus.OK);
+    @GetMapping("/tickets")
+    public ResponseEntity<List<TicketDto>> getTicket(){
+        return new ResponseEntity<>(ticketService.getTicket(), org.springframework.http.HttpStatus.OK);
     }
 
     @PostMapping("/tickets")
-    public ResponseEntity<Ticket> createTicket(@RequestBody Ticket ticket){
+    public ResponseEntity<TicketDto> createTicket(@RequestBody TicketRecievedDto ticket){
         return new ResponseEntity<>(ticketService.createTicket(ticket), org.springframework.http.HttpStatus.OK);
     }
 
     @PutMapping("/tickets/{ticketId}")
-    public ResponseEntity<Ticket> modifyTicket(@PathVariable Long ticketId, @RequestBody Ticket updatedTicket){
+    public ResponseEntity<TicketDto> modifyTicket(@PathVariable Long ticketId, @RequestBody TicketRecievedDto updatedTicket){
         return new ResponseEntity<>(ticketService.modifyTicket(ticketId, updatedTicket), org.springframework.http.HttpStatus.OK);
     }
 

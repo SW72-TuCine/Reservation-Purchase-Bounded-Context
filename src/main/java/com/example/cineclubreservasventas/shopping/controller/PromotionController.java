@@ -1,10 +1,15 @@
 package com.example.cineclubreservasventas.shopping.controller;
 
+import com.example.cineclubreservasventas.shopping.dto.common.PromotionDto;
+import com.example.cineclubreservasventas.shopping.dto.recieved.PromotionRecievedDto;
 import com.example.cineclubreservasventas.shopping.entity.Promotion;
 import com.example.cineclubreservasventas.shopping.service.inter.PromotionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/TuCine/v1/reservation_purchase")
@@ -12,18 +17,18 @@ public class PromotionController {
     @Autowired
     private PromotionService promotionService;
 
-    @GetMapping("/promotions/{promotionId}")
-    public ResponseEntity<Promotion> getPromotion(Long promotionId){
-        return new ResponseEntity<>(promotionService.getPromotion(promotionId), org.springframework.http.HttpStatus.OK);
+    @GetMapping("/promotions")
+    public ResponseEntity<List<PromotionDto>> getPromotion(){
+        return new ResponseEntity<>(promotionService.getPromotion(), HttpStatus.OK);
     }
 
     @PostMapping("/promotions")
-    public ResponseEntity<Promotion> createPromotion(@RequestBody Promotion promotion){
+    public ResponseEntity<PromotionDto> createPromotion(@RequestBody PromotionRecievedDto promotion){
         return new ResponseEntity<>(promotionService.createPromotion(promotion), org.springframework.http.HttpStatus.OK);
     }
 
     @PutMapping("/promotions/{promotionId}")
-    public ResponseEntity<Promotion> modifyPromotion(@PathVariable Long promotionId, @RequestBody Promotion updatedPromotion){
+    public ResponseEntity<PromotionDto> modifyPromotion(@PathVariable Long promotionId, @RequestBody PromotionRecievedDto updatedPromotion){
         return new ResponseEntity<>(promotionService.modifyPromotion(promotionId, updatedPromotion), org.springframework.http.HttpStatus.OK);
     }
 

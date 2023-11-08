@@ -1,12 +1,16 @@
 package com.example.cineclubreservasventas.shopping.service.inter;
 
+import com.example.cineclubreservasventas.shopping.dto.common.TicketDto;
+import com.example.cineclubreservasventas.shopping.dto.recieved.TicketRecievedDto;
 import com.example.cineclubreservasventas.shopping.entity.Promotion;
 import com.example.cineclubreservasventas.shopping.entity.Ticket;
 
+import java.util.List;
+
 public interface TicketService {
-    public Ticket createTicket(Ticket ticket);
-    public Ticket modifyTicket(Long id, Ticket ticket);
+    public TicketDto createTicket(TicketRecievedDto ticket);
+    public TicketDto modifyTicket(Long id, TicketRecievedDto ticket);
     public void deleteTicket(Long id);
     public Ticket applyPromotion(Promotion promotion, Ticket ticket);
-    public Ticket getTicket(Long id);
+    public List<TicketDto> getTicket();
 }
