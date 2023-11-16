@@ -29,6 +29,6 @@ public class Ticket {
     private long userId;
     @Column(name = "totalPrice", nullable = false)
     private float totalPrice;
-    private long movieFutureId;
+    private long movieId;
     private int status;
 }

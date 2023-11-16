@@ -1,5 +1,6 @@
 package com.example.cineclubreservasventas.shopping.service.impl;
 
+import com.example.cineclubreservasventas.shopping.client.ShowtimeClient;
 import com.example.cineclubreservasventas.shopping.client.UserClient;
 import com.example.cineclubreservasventas.shopping.dto.common.TicketDto;
 import com.example.cineclubreservasventas.shopping.dto.recieved.TicketRecievedDto;
@@ -7,10 +8,12 @@ import com.example.cineclubreservasventas.shopping.entity.Promotion;
 import com.example.cineclubreservasventas.shopping.entity.Ticket;
 import com.example.cineclubreservasventas.shopping.repository.TicketRepository;
 import com.example.cineclubreservasventas.shopping.service.inter.TicketService;
+import com.example.cineclubreservasventas.shopping.shared.ShowtimeResponse;
 import feign.FeignException;
 import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
@@ -21,6 +24,8 @@ import java.util.stream.Collectors;
 public class TicketServiceImpl implements TicketService {
     @Autowired
     UserClient userClient;
+    @Autowired
+    ShowtimeClient showtimeClient;
     @Autowired
     TicketRepository ticketRepository;
     @Autowired
@@ -40,6 +45,7 @@ public class TicketServiceImpl implements TicketService {
         validateTicket(ticket);
         ValidateIfUserExists(String.valueOf(ticket.getUserId()));
         TicketDto ticketDto=modelMapper.map(ticket,TicketDto.class);
+        updateShowtimeSeats(ticket.getMovieId(), ticket.getNumberSeats());
         Ticket ticket1 = DtoToEntity(ticketDto);
 
         return EntityToDto(ticketRepository.save(ticket1));
@@ -118,5 +124,21 @@ public class TicketServiceImpl implements TicketService {
         }
     }
 
+    public void updateShowtimeSeats(Long movieId, int newNumberOfSeats) {
+        ResponseEntity<ShowtimeResponse> responseEntity = showtimeClient.getShowtimeByCinemaId(movieId);
+        if (responseEntity.getStatusCode().is2xxSuccessful()) {
+            com.example.cineclubreservasventas.shopping.shared.ShowtimeResponse showtimeResponse = responseEntity.getBody();
+            if (showtimeResponse != null) {
+                int updatedSeats = showtimeResponse.getNumberOfSeats() - newNumberOfSeats;
+                if (updatedSeats >= 0) {
+                    showtimeResponse.setNumberOfSeats(updatedSeats);
+                    showtimeClient.updateShowtimeByMovieId(movieId, showtimeResponse);
+                }
+            else {
 
+            }
+        }else {
+
+        }
+    }
 }

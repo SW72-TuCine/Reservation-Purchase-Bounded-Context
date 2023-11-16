@@ -11,6 +11,6 @@ public class TicketDto {
     private int numberSeats;
     private long userId;
     private float totalPrice;
-    private long movieFutureId;
+    private long movieId;
     private int status;
 }
