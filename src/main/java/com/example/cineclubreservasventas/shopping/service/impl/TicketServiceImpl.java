@@ -133,12 +133,12 @@ public class TicketServiceImpl implements TicketService {
                 if (updatedSeats >= 0) {
                     showtimeResponse.setNumberOfSeats(updatedSeats);
                     showtimeClient.updateShowtimeByMovieId(movieId, showtimeResponse);
+                } else {
+
                 }
-            else {
+            } else {
 
             }
-        }else {
-
         }
     }
 }
